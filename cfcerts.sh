@@ -15,16 +15,8 @@ CITY="$5"
 COMPANY="$6"
 DEPARTMENT="$7"
 
-
-# generate private key for CSR first, then pass into curl there
-openssl genrsa -out ${DOMAIN}--private.txt
-
-echo "Generated ${DOMAIN}--private.txt"
-
-# Generate CSR from private key
-openssl req -new -sha256 -key ${DOMAIN}--private.txt -out ${DOMAIN}--csr.txt -subj "/C=${COUNTRY}/ST=${STATE}/L=${CITY}/O=${COMPANY}/OU=${DEPARTMENT}/CN=${DOMAIN}"
-
-echo "Generated ${DOMAIN}--csr.txt"
+# Generate both the private key and the CSR
+openssl req -new -newkey rsa:2048 -nodes -out ${DOMAIN}--csr.txt -keyout ${DOMAIN}--private.txt -subj "/C=${COUNTRY}/ST=${STATE}/L=${CITY}/O=${COMPANY}/OU=${DEPARTMENT}/CN=${DOMAIN}"
 
 CSR=$(cat ${DOMAIN}--csr.txt)
 CSRNEWLINES="${CSR//$'\n'/\n}"
